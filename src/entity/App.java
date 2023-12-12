@@ -1,9 +1,11 @@
 package entity;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 import DAO.ClienteDAO;
 import DAO.ProdutoDAO;
 import DAO.ServicoDAO;
+import DAO.VendaDAO;
 
 public class App{
     public static void main(String[] args){
@@ -57,10 +59,58 @@ public class App{
                     System.out.println("Valor desse serviço: ");
                     float valorServico = Float.parseFloat(scanner.nextLine());
                     Servicos novoServico = new Servicos(nomeServico, valorServico);
-                    new ServicoDAO().cadastraServico(novoServico);
-                    
+                    new ServicoDAO().cadastraServico(novoServico);                    
                 break;
-
+                case 4:
+                    boolean adicionarMaisItens = true;
+                    VendaDAO vendaDAO = new VendaDAO();
+                    ClienteDAO clienteDAO2 = new ClienteDAO(); 
+                    VendaProduto vendaInformacoes = null;
+                    int codigoProduto = 0;
+                    int quantidadeVenda = 0;
+                    String cpfCliente = "";
+                    while (adicionarMaisItens) {
+                        System.out.println("Digite o CPF do cliente:");
+                        cpfCliente = scanner.nextLine();
+                        System.out.println("Digite o código do produto:");
+                        codigoProduto = Integer.parseInt(scanner.nextLine());
+                        System.out.println("Digite a quantidade da venda:");
+                        quantidadeVenda = Integer.parseInt(scanner.nextLine());
+                
+                        // Buscar informações da venda a partir do DAO
+                        
+                        vendaInformacoes = vendaDAO.buscarInformacoesVenda(cpfCliente, codigoProduto, quantidadeVenda);
+                        System.out.println(vendaInformacoes.getTotalValorVenda());
+                        if (vendaInformacoes != null) {
+                            // Se a venda for encontrada, exibir os detalhes
+                            System.out.println("Detalhes da Venda:");
+                            System.out.println("Cliente: " + vendaInformacoes.getCliente().getNome());
+                            System.out.println("Produto: " + vendaInformacoes.getProdutos().getNomeProduto());
+                            System.out.println("Data da Venda: " + vendaInformacoes.getDataVenda());
+                            System.out.println("Quantidade Vendida: " + vendaInformacoes.getQuantidadeVenda());
+                            System.out.println("Valor Total: " + vendaInformacoes.getTotalValorVenda());
+                            // Perguntar ao cliente se deseja adicionar mais algum item à venda
+                            System.out.println("Deseja adicionar mais algum item à venda? (S/N)");
+                            String resposta = scanner.nextLine();
+                            if (!resposta.equalsIgnoreCase("S")) {
+                                adicionarMaisItens = false;
+                            }
+                        }
+                    }
+                    if (vendaInformacoes != null){
+                            // Caso não haja um produto retornado na busca
+                            Produtos novoProdutoVenda = new Produtos(); // Ajuste para a criação de um novo produto
+                            Clientes cliente = clienteDAO2.getCliente(cpfCliente);
+                            // Ajuste dos valores passados para a criação do objeto VendaProduto
+                            VendaProduto novaVenda = new VendaProduto(codigoProduto, LocalDate.now(), cliente, novoProdutoVenda, quantidadeVenda, vendaInformacoes.getTotalValorVenda());
+                        
+                            // Salvar a nova venda no banco de dados
+                            vendaDAO.salvarVenda(novaVenda);
+                            System.out.println("Nova venda salva com sucesso.");
+                        }
+                                   
+                    break;
+    
                 default:
                     
                 break;

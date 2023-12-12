@@ -12,6 +12,12 @@ public class Produtos {
         this.quantidadeproduto = quantidadeproduto;
         
     }
+    public Produtos() {
+        this.nomeproduto = "";
+        this.valorproduto = 0;
+        this.quantidadeproduto = 0;
+        
+    }
         
     public int getIdProduto(){
         return idproduto;

@@ -13,9 +13,17 @@ public class Clientes {
         this.telefonecliente = telefonecliente;        
     }
 
-    public String getNome() {
+    public Clientes(){
+        this.nomecliente = "";
+        this.cpfcliente = "";
+        this.enderecocliente = "";
+        this.telefonecliente = ""; 
+    }
+    
+    public String getNome(){
         return nomecliente;
     }
+
     public String getCpf() {
         return cpfcliente;
     }
@@ -29,7 +37,6 @@ public class Clientes {
     }
 
    
-
     public void setNome(String nomecliente) {
         this.nomecliente = nomecliente;
     }

@@ -14,7 +14,7 @@ public class ClienteDAO {
 
         PreparedStatement ps = null;
         try {
-            ps= Conexao.getConexao().prepareStatement(sql);
+            ps = Conexao.getConexao().prepareStatement(sql);
             ps.setString(1, cliente.getNome());
             ps.setString(2, cliente.getCpf());
             ps.setString(3, cliente.getEndereco());
@@ -25,6 +25,21 @@ public class ClienteDAO {
             e.printStackTrace();
         
         }
+    }
+    public Clientes getCliente(String cpfCliente){
+         String sql = "SELECT * FROM cliente WHERE cpfcliente = ?";
+         try (PreparedStatement ps = Conexao.getConexao().prepareStatement(sql)) {
+            ps.setString(1, cpfCliente); 
+            ResultSet rs = ps.executeQuery();
+    
+            if (rs.next()) {
+               Clientes cliente = new Clientes(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+               return cliente;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public boolean verificarExistenciaCPF(String cpf) {
